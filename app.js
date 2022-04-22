@@ -17,14 +17,14 @@ var users = [
 app.get("/", (req, res) => {
     res.render('index');
 });
-app.get("/user", (req, res) => {
+app.get("/users", (req, res) => {
     res.render('users/index',{
         users: users
     });
 });
 
 
-app.get("/user/search", function (req, res){
+app.get("/users/search", (req, res) =>{
     var q = req.query.q;
     try{
         var matcheUsers =  users.filter(function (user) {
@@ -37,6 +37,14 @@ app.get("/user/search", function (req, res){
         res.json(e);
     }
 
+});
+
+app.get("/users/create", (req, res) =>{
+    res.render("users/create");
+});
+app.post("/users/create", (req, res) =>{
+    users.push(req.body);
+    res.redirect("/users");
 });
 
 app.listen(port, () => {
