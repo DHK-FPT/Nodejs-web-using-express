@@ -1,8 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
 const app = express();
 
 const port = 80;
+
+const adapter = new FileSync('db.json')
+const db = low(adapter)
+
+db.defaults({ users: [] })
+  .write();
 
 app.set('view engine' ,'pug');
 app.set('views','./views');
@@ -19,7 +27,7 @@ app.get("/", (req, res) => {
 });
 app.get("/users", (req, res) => {
     res.render('users/index',{
-        users: users
+        users: db.get('users').value()
     });
 });
 
@@ -43,7 +51,7 @@ app.get("/users/create", (req, res) =>{
     res.render("users/create");
 });
 app.post("/users/create", (req, res) =>{
-    users.push(req.body);
+    db.get('users').push(req.body).write();
     res.redirect("/users");
 });
 
